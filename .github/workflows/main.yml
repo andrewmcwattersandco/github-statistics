@@ -47,5 +47,7 @@ jobs:
 
     - name: Commit changes
       run: |
+        git config --global user.email "$(id -un)@$(uname -n)"
+        git config --global user.name "$(id -un)"
         git add github-statistics.db
         git commit -m 'Update github-statistics.db'
