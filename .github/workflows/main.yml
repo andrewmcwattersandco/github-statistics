@@ -18,29 +18,6 @@ jobs:
     - name: Set up sqlite-utils
       run: pip install sqlite-utils
 
-    - name: Set up database
-      run: |
-        sqlite3 -line github-statistics.db 'CREATE TABLE IF NOT EXISTS `users` (
-          `id` int,
-          `login` text,
-          `node_id` text,
-          `avatar_url` text,
-          `gravatar_id` text,
-          `url` text,
-          `html_url` text,
-          `followers_url` text,
-          `following_url` text,
-          `gists_url` text,
-          `starred_url` text,
-          `subscriptions_url` text,
-          `organizations_url` text,
-          `repos_url` text,
-          `events_url` text,
-          `received_events_url` text,
-          `type` text,
-          `site_admin` int
-        )'
-
     - name: Run
       run: |
         curl \
