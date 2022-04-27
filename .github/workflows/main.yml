@@ -23,6 +23,8 @@ jobs:
         since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
         curl \
           -H "Accept: application/vnd.github.v3+json" \
+          -S \
+          -s \
           https://api.github.com/users?per_page=100&since=${since} | \
         sqlite-utils insert github-statistics.db users - --pk=id
 
