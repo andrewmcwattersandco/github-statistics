@@ -51,3 +51,4 @@ jobs:
         git config --global user.name "$(id -un)"
         git add github-statistics.db
         git commit -m 'Update github-statistics.db'
+        git push
