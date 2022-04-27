@@ -17,5 +17,6 @@ jobs:
 
     - name: Run
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        curl \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/users
