@@ -19,4 +19,4 @@ jobs:
       run: |
         curl \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/users
+          https://api.github.com/users?per_page=100
