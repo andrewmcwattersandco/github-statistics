@@ -20,12 +20,7 @@ jobs:
 
     - name: Run
       run: |
-        since=$(sqlite3 github-statistics.db
-          'SELECT id
-           FROM users
-           ORDER BY id DESC
-           LIMIT 1'
-        )
+        since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
         curl \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/users?per_page=100&since=${since} | \
