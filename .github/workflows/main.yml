@@ -44,3 +44,8 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -i \
           https://api.github.com/users?per_page=100
+
+    - name: Commit changes
+      run: |
+        git add github-statistics.db
+        git commit -m 'Update github-statistics.db'
