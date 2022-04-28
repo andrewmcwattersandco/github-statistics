@@ -22,6 +22,15 @@ jobs:
     - name: Set up sqlite-utils
       run: pip install sqlite-utils
 
+    - name: Set up cURL
+      run: |
+        curl -O https://curl.se/download/curl-7.83.0.tar.gz
+        tar xf curl-7.83.0.tar.gz
+        cd curl-7.83.0
+        ./configure --with-openssl
+        make
+        sudo make install
+
     - name: Decompress database
       run: /usr/bin/tar --use-compress-program zstd -xf github-statistics.tzst
 
