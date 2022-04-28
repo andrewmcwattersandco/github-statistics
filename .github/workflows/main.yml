@@ -30,6 +30,7 @@ jobs:
         ./configure --with-openssl
         make
         sudo make install
+        sudo ldconfig
 
     - name: Decompress database
       run: /usr/bin/tar --use-compress-program zstd -xf github-statistics.tzst
