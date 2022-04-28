@@ -56,6 +56,7 @@ jobs:
             reset=$(grep 'x-ratelimit-reset' store.txt)
             echo "$reset"
             reset=$(echo "$reset" | tr -cd '[:digit:]')
+            echo "$((reset - $(date +%s))) seconds until rate limit reset"
             grep 'message' users.json
             exit
           fi
