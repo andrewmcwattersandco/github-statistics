@@ -46,7 +46,6 @@ jobs:
           remaining=$(cat store.txt | grep 'x-ratelimit-remaining')
           echo $remaining
           remaining=$(echo $remaining | tr -cd '[:digit:]')
-          fi
         done
 
     - name: Compress database
