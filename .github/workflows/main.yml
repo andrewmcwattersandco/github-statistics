@@ -26,10 +26,10 @@ jobs:
         while [ $remaining -gt 0 ]
         do
           since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
+          # -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           curl \
             -D store.txt \
             -H "Accept: application/vnd.github.v3+json" \
-            -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             -S \
             -s \
             "https://api.github.com/users?per_page=100&since=${since}" | \
