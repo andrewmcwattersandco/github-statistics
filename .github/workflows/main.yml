@@ -19,9 +19,6 @@ jobs:
       with:
         lfs: true
 
-    - name: Set up sqlite-utils
-      run: pip install sqlite-utils
-
     - name: Set up cURL
       run: |
         curl -O https://curl.se/download/curl-7.83.0.tar.gz
@@ -31,6 +28,9 @@ jobs:
         make
         sudo make install
         sudo ldconfig
+
+    - name: Set up sqlite-utils
+      run: pip install sqlite-utils
 
     - name: Decompress database
       run: /usr/bin/tar --use-compress-program zstd -xf github-statistics.tzst
