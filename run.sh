@@ -5,6 +5,7 @@ query='SELECT id FROM users ORDER BY id DESC LIMIT 1'
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   since=$(sqlite3 github-statistics.db "$query")
+  # -H "Authorization: Bearer $GITHUB_TOKEN" \
   if curl \
     -D store.txt \
     -H "Accept: application/vnd.github.v3+json" \
@@ -12,7 +13,7 @@ do
     -s \
     "https://api.github.com/users?per_page=100&since=${since}" \
     > users.json
-    grep 'HTTP/2 200' store.txt
+    grep -q 'HTTP/2 200' store.txt
   then
     sqlite-utils insert github-statistics.db users - --pk=id \
     < users.json
