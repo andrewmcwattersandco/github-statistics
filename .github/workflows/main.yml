@@ -22,6 +22,9 @@ jobs:
     - name: Set up sqlite-utils
       run: pip install sqlite-utils
 
+    - name: Decompress database
+      run: /usr/bin/tar --use-compress-program zstd -xf github-statistics.tzst
+
     - name: Run
       run: |
         ls -la
@@ -42,12 +45,17 @@ jobs:
           remaining=$(echo $remaining | tr -cd '[:digit:]')
         done
 
+    - name: Compress database
+      run: |
+        rm github-statistics.tzst
+        /usr/bin/tar --use-compress-program zstd -cf github-statistics.tzst github-statistics.db
+
     - name: Commit changes
       run: |
         git config --global user.email "$(id -un)@$(uname -n)"
         git config --global user.name "$(id -un)"
-        git add github-statistics.db
-        if git commit -m 'Update github-statistics.db'
+        git add github-statistics.tzst
+        if git commit -m 'Update github-statistics.tzst'
         then
           git push
         fi
