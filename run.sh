@@ -18,7 +18,7 @@ do
     reset=$(grep 'x-ratelimit-reset' store.txt)
     echo "$reset"
     reset=$(echo "$reset" | tr -cd '[:digit:]')
-    grep 'message' store.txt
+    grep 'message' users.json
   fi
 
   remaining=$(grep 'x-ratelimit-remaining' store.txt)
