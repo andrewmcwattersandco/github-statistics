@@ -41,6 +41,10 @@ jobs:
             "https://api.github.com/users?per_page=100&since=${since}" > users.json
           then
             cat users.json | sqlite-utils insert github-statistics.db users - --pk=id
+          else
+            reset=$(cat store.txt | grep 'x-ratelimit-reset')
+            echo $reset
+            reset=$(echo $reset | tr -cd '[:digit:]')
           fi
 
           remaining=$(cat store.txt | grep 'x-ratelimit-remaining')
