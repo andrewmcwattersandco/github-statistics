@@ -34,6 +34,7 @@ jobs:
           since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
           if curl \
             -D store.txt \
+            --fail-with-body \
             -H "Accept: application/vnd.github.v3+json" \
             -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             -S \
