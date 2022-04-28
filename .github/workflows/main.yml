@@ -22,6 +22,7 @@ jobs:
 
     - name: Run
       run: |
+        ls -la
         remaining=1
         while [ $remaining -gt 0 ]
         do
