@@ -32,17 +32,21 @@ jobs:
         while [ $remaining -gt 0 ]
         do
           since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
-          curl \
+          if curl \
             -D store.txt \
             -H "Accept: application/vnd.github.v3+json" \
             -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             -S \
             -s \
-            "https://api.github.com/users?per_page=100&since=${since}" | \
-          sqlite-utils insert github-statistics.db users - --pk=id
+            "https://api.github.com/users?per_page=100&since=${since}" > users.json
+          then
+            cat users.json | sqlite-utils insert github-statistics.db users - --pk=id
+          fi
+
           remaining=$(cat store.txt | grep 'x-ratelimit-remaining')
           echo $remaining
           remaining=$(echo $remaining | tr -cd '[:digit:]')
+          fi
         done
 
     - name: Compress database
