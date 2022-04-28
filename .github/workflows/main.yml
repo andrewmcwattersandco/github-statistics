@@ -36,6 +36,8 @@ jobs:
       run: /usr/bin/tar --use-compress-program zstd -xf github-statistics.tzst
 
     - name: Run
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: ./run.sh
 
     - name: Compress database
