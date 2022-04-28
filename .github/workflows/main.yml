@@ -59,7 +59,7 @@ jobs:
                 echo "$remaining seconds until rate limit reset"
             fi
 
-            grep -oE '("message":)\s*(".*")' users.json
+            grep -oE '("message":)\s*(".*")' users.json | tr -d '"'
             exit
           fi
 
