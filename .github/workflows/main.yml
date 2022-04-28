@@ -45,6 +45,7 @@ jobs:
             reset=$(cat store.txt | grep 'x-ratelimit-reset')
             echo $reset
             reset=$(echo $reset | tr -cd '[:digit:]')
+            cat store.txt | grep 'message'
           fi
 
           remaining=$(cat store.txt | grep 'x-ratelimit-remaining')
