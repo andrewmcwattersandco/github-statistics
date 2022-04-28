@@ -57,6 +57,7 @@ jobs:
             echo "$reset"
             reset=$(echo "$reset" | tr -cd '[:digit:]')
             grep 'message' users.json
+            exit
           fi
 
           remaining=$(grep 'x-ratelimit-remaining' store.txt)
