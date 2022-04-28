@@ -26,14 +26,15 @@ jobs:
         i=1
         while [ $i -le $remaining ]
         do
-        since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
-        curl \
+          since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
+          curl \
             -D store.txt \
-          -H "Accept: application/vnd.github.v3+json" \
-          -S \
-          -s \
-          "https://api.github.com/users?per_page=100&since=${since}" | \
-        sqlite-utils insert github-statistics.db users - --pk=id
+            -H "Accept: application/vnd.github.v3+json" \
+            -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            -S \
+            -s \
+            "https://api.github.com/users?per_page=100&since=${since}" | \
+          sqlite-utils insert github-statistics.db users - --pk=id
           remaining=$(cat store.txt | grep 'x-ratelimit-remaining' | tr -cd '[:digit:]')
           i=$(($i+1))
         done
