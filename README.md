@@ -1,7 +1,7 @@
 # github-statistics
 **github-statistics** is a workflow repository designed to pull data from the
 [GitHub Users API][1] on a regularly scheduled basis to generate distribution
-statistics from based on a subset of GitHub users.
+statistics based on a subset of GitHub early users.
 
 The planned studies to be produced by this repository will be bounded by GitHub
 repository limits in order to follow recommendations set out by the
