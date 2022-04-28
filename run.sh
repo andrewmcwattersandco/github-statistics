@@ -1,7 +1,7 @@
 #!/bin/sh
 ls -la
 remaining=1
-while [ $remaining -gt 0 ]
+while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   since=$(sqlite3 github-statistics.db 'SELECT id FROM users ORDER BY id DESC LIMIT 1')
   if curl \
