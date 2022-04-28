@@ -33,7 +33,9 @@ jobs:
             -s \
             "https://api.github.com/users?per_page=100&since=${since}" | \
           sqlite-utils insert github-statistics.db users - --pk=id
-          remaining=$(cat store.txt | grep 'x-ratelimit-remaining' | tr -cd '[:digit:]')
+          remaining=$(cat store.txt | grep 'x-ratelimit-remaining')
+          echo $remaining
+          remaining=$(echo $remaining | tr -cd '[:digit:]')
         done
 
     - name: Commit changes
