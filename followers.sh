@@ -23,7 +23,7 @@ do
   fi
 
   # Get followers
-  if
+  if 
     curl \
       -D store.txt \
       -H "Accept: application/vnd.github.v3+json" \
@@ -38,12 +38,11 @@ do
     # sqlite-utils insert github-users.db users-followers - --pk=id \
     # < followers.json
 
-    # TODO: Get follower count
-    grep -Eo 'link: <.+>; rel="next", <.+>; rel="last"' < store.txt | \
-    cut -f 2 -d ','
-
-    # TODO: Get `page` parameter
-    page=0
+    # Get `page` parameter
+    page=$(
+      pcregrep -o1 'link: <.+>; rel="next", <.+&page=(\d+)>; rel="last"' \
+      < store.txt
+    )
     pages=$((page - 1))
     count=$((100 * pages))
 
