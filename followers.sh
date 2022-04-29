@@ -60,7 +60,13 @@ do
       pcregrep -o1 'link: <.+>; rel="next", <.+&page=(\d+)>; rel="last"' \
       < store.txt
     )
-    count=$((100 * (page - 1)))
+    if [ -z "$page" ]
+    then
+      page=1
+      count=0
+    else
+      count=$((100 * (page - 1)))
+    fi
 
     # Get number of followers on the last page
     getfollowers "$username" "$page"
@@ -70,7 +76,7 @@ do
 
     # Insert followers
     echo "{\
-  \"id\": \"${id}\",\
+  \"id\": ${id},\
   \"count\": ${count}\
 }" | \
     sqlite-utils insert github-users.db users_followers - --pk=id
