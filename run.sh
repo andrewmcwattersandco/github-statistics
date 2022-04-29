@@ -5,10 +5,10 @@ query='SELECT id FROM users ORDER BY id DESC LIMIT 1'
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   since=$(sqlite3 github-statistics.db "$query")
-  # -H "Authorization: Bearer $GITHUB_TOKEN" \
   if curl \
     -D store.txt \
     -H "Accept: application/vnd.github.v3+json" \
+    -H "Authorization: Bearer $GITHUB_TOKEN" \
     -S \
     -s \
     "https://api.github.com/users?per_page=100&since=${since}" \

@@ -1,10 +1,10 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
   workflow_dispatch:
   # schedule:
@@ -33,7 +33,6 @@ jobs:
         while [ -n "$remaining" ] && [ $remaining -gt 0 ]
         do
           since=$(sqlite3 github-statistics.db "$query")
-          # -H "Authorization: Bearer $GITHUB_TOKEN" \
           if curl \
             -D store.txt \
             -H "Accept: application/vnd.github.v3+json" \
