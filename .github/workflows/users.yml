@@ -1,4 +1,4 @@
-name: CI
+name: Users
 
 on:
   # push:
