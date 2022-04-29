@@ -10,6 +10,10 @@ repository limits in order to follow recommendations set out by the
 **Note:** [Do not use Git LFS.][3] It is not possible to remove Git LFS objects
 from a repository without deleting and recreating the repository. 
 
+## Databases
+* `github-users.db`  
+  The first 1.5 million GitHub users as listed by `GET /users`
+
 ## Decompress database
 ### macOS
 ```sh
