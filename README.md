@@ -13,13 +13,13 @@ from a repository without deleting and recreating the repository.
 ## Decompress database
 ### macOS
 ```sh
-zstd -d github-statistics.tzst
-tar xf github-statistics.tar
+zstd -d github-users.tzst
+tar xf github-users.tar
 ```
 
 ### Ubuntu
 ```sh
-tar --use-compress-program zstd -xf github-statistics.tzst
+tar --use-compress-program zstd -xf github-users.tzst
 ```
 
 ## License

@@ -4,7 +4,7 @@ remaining=1
 query='SELECT id FROM users ORDER BY id DESC LIMIT 1'
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
-  since=$(sqlite3 github-statistics.db "$query")
+  since=$(sqlite3 github-users.db "$query")
   if curl \
     -D store.txt \
     -H "Accept: application/vnd.github.v3+json" \
@@ -15,7 +15,7 @@ do
     > users.json
     grep -q 'HTTP/2 200' store.txt
   then
-    sqlite-utils insert github-statistics.db users - --pk=id \
+    sqlite-utils insert github-users.db users - --pk=id \
     < users.json
   else
     reset=$(grep 'x-ratelimit-reset' store.txt)

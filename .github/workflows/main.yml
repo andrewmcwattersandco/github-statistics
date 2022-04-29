@@ -21,7 +21,7 @@ jobs:
       run: pip install sqlite-utils
 
     - name: Decompress database
-      run: /usr/bin/tar --use-compress-program zstd -xf github-statistics.tzst
+      run: /usr/bin/tar --use-compress-program zstd -xf github-users.tzst
 
     - name: Run
       env:
@@ -32,7 +32,7 @@ jobs:
         query='SELECT id FROM users ORDER BY id DESC LIMIT 1'
         while [ -n "$remaining" ] && [ $remaining -gt 0 ]
         do
-          since=$(sqlite3 github-statistics.db "$query")
+          since=$(sqlite3 github-users.db "$query")
           if curl \
             -D store.txt \
             -H "Accept: application/vnd.github.v3+json" \
@@ -43,7 +43,7 @@ jobs:
             > users.json
             grep -q 'HTTP/2 200' store.txt
           then
-            sqlite-utils insert github-statistics.db users - --pk=id \
+            sqlite-utils insert github-users.db users - --pk=id \
             < users.json
           else
             reset=$(grep 'x-ratelimit-reset' store.txt)
@@ -67,17 +67,17 @@ jobs:
 
     - name: Compress database
       run: |
-        rm github-statistics.tzst
+        rm github-users.tzst
         /usr/bin/tar \
           --use-compress-program zstd \
-          -cf github-statistics.tzst github-statistics.db
+          -cf github-users.tzst github-users.db
 
     - name: Commit changes
       run: |
         git config --global user.email "$(id -un)@$(uname -n)"
         git config --global user.name "$(id -un)"
-        git add github-statistics.tzst
-        if git commit -m 'Update github-statistics.tzst'
+        git add github-users.tzst
+        if git commit -m 'Update github-users.tzst'
         then
           git push
         fi
