@@ -28,7 +28,7 @@ do
         echo "$remaining seconds until rate limit reset"
     fi
 
-    grep 'message' users.json
+    grep -Eo '("message":)\s*(".*")' users.json | tr -d '"'
     exit
   fi
 
