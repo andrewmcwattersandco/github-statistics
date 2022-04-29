@@ -1,20 +1,41 @@
 #!/bin/sh
+getfollowers() {
+  if [ -n "$2" ]
+  then
+    URL="https://api.github.com/users/${1}/followers?per_page=100&page=${2}"
+  else
+    URL="https://api.github.com/users/${1}/followers?per_page=100"
+  fi
+
+  curl \
+    -D store.txt \
+    -H "Accept: application/vnd.github.v3+json" \
+    -H "Authorization: Bearer $GITHUB_TOKEN" \
+    -S \
+    -s \
+    "$URL" \
+    > followers.json
+  grep -q 'HTTP/2 200' store.txt
+  return $?
+}
+
 id=0
 remaining=1
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   # Get user
   query="\
-    SELECT id, followers_url \
+    SELECT id, login, followers_url \
     FROM users \
     WHERE id > ${id} \
     ORDER BY id \
     LIMIT 1"
   result=$(sqlite3 github-users.db "$query")
 
-  # id|followers_url
+  # id|login|followers_url
   id=$(echo "$result" | cut -f 1 -d '|')
-  followers_url=$(echo "$result" | cut -f 2 -d '|')
+  username=$(echo "$result" | cut -f 2 -d '|')
+  followers_url=$(echo "$result" | cut -f 3 -d '|')
 
   # 0 rows
   if [ -z "$followers_url" ]
@@ -24,15 +45,7 @@ do
 
   # Get followers
   if
-    curl \
-      -D store.txt \
-      -H "Accept: application/vnd.github.v3+json" \
-      -H "Authorization: Bearer $GITHUB_TOKEN" \
-      -S \
-      -s \
-      "$followers_url?per_page=100" \
-      > followers.json
-    grep -q 'HTTP/2 200' store.txt
+    getfollowers "$username"
   then
     # Insert followers
     # sqlite-utils insert github-users.db users-followers - --pk=id \
@@ -43,12 +56,13 @@ do
       pcregrep -o1 'link: <.+>; rel="next", <.+&page=(\d+)>; rel="last"' \
       < store.txt
     )
-    pages=$((page - 1))
-    count=$((100 * pages))
+    count=$((100 * (page - 1)))
 
-    # TODO: Get number of followers on the last page
-    followers=0
+    # Get number of followers on the last page
+    getfollowers "$username" "$page"
+    followers=$(jq 'length' followers.json)
     count=$((count + followers))
+    echo "$username has $count followers"
   else
     # The time at which the current rate limit window resets in UTC epoch
     # seconds.
