@@ -19,7 +19,15 @@ getfollowers() {
   return $?
 }
 
-id=0
+# Get last user
+query='SELECT id FROM users_followers ORDER BY id DESC LIMIT 1'
+if sqlite3 github-users.db "$query"
+then
+  id=$(sqlite3 github-users.db "$query")
+else
+  id=0
+fi
+
 remaining=1
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
@@ -47,10 +55,6 @@ do
   if
     getfollowers "$username"
   then
-    # Insert followers
-    # sqlite-utils insert github-users.db users-followers - --pk=id \
-    # < followers.json
-
     # Get `page` parameter
     page=$(
       pcregrep -o1 'link: <.+>; rel="next", <.+&page=(\d+)>; rel="last"' \
@@ -63,6 +67,13 @@ do
     followers=$(jq 'length' followers.json)
     count=$((count + followers))
     echo "$username has $count followers"
+
+    # Insert followers
+    echo "{\
+  \"id\": \"${id}\",\
+  \"count\": ${count}\
+}" | \
+    sqlite-utils insert github-users.db users_followers - --pk=id
   else
     # The time at which the current rate limit window resets in UTC epoch
     # seconds.
