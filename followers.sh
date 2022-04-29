@@ -21,7 +21,7 @@ getfollowers() {
 
 # Get last user
 query='SELECT id FROM users_followers ORDER BY id DESC LIMIT 1'
-if sqlite3 github-users.db "$query"
+if sqlite3 github-users.db "$query" > /dev/null 2>&1
 then
   id=$(sqlite3 github-users.db "$query")
 else
