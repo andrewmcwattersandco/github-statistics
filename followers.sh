@@ -23,7 +23,7 @@ do
   fi
 
   # Get followers
-  if 
+  if
     curl \
       -D store.txt \
       -H "Accept: application/vnd.github.v3+json" \
