@@ -135,6 +135,7 @@ jobs:
           echo "$remaining"
           remaining=$(echo "$remaining" | tr -cd '[:digit:]')
         done
+      shell: sh {0}
 
     - name: Compress database
       run: |
