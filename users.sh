@@ -1,5 +1,4 @@
 #!/bin/sh
-ls -la
 remaining=1
 query='SELECT id FROM users ORDER BY id DESC LIMIT 1'
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
