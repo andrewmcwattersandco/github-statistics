@@ -148,6 +148,7 @@ jobs:
       run: |
         git config --global user.email "$(id -un)@$(uname -n)"
         git config --global user.name "$(id -un)"
+        git pull
         git add github-users.tzst
         if git commit -m 'Update github-users.tzst'
         then
