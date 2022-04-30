@@ -95,7 +95,7 @@ do
     fi
 
     # { "message": ".*" } -> message: .*
-    grep -Eo '("message":)\s*(".*")' users.json | tr -d '"'
+    grep -Eo '("message":)\s*(".*")' followers.json | tr -d '"'
     exit
   fi
 
