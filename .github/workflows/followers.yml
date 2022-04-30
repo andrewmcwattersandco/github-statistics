@@ -1,0 +1,151 @@
+name: Followers
+
+on:
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+  workflow_dispatch:
+  # schedule:
+  #     - cron:  '30 * * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up sqlite-utils
+      run: pip install sqlite-utils
+
+    - name: Decompress database
+      run: /usr/bin/tar --use-compress-program zstd -xf github-users.tzst
+
+    - name: Run
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        getfollowers() {
+          if [ -n "$2" ]
+          then
+            URL="https://api.github.com/users/${1}/followers?per_page=100&page=${2}"
+          else
+            URL="https://api.github.com/users/${1}/followers?per_page=100"
+          fi
+
+          curl \
+            -D store.txt \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -S \
+            -s \
+            "$URL" \
+            > followers.json
+          grep -q 'HTTP/2 200' store.txt
+          return $?
+        }
+
+        # Get last user
+        query='SELECT id FROM users_followers ORDER BY id DESC LIMIT 1'
+        if sqlite3 github-users.db "$query" > /dev/null 2>&1
+        then
+          id=$(sqlite3 github-users.db "$query")
+        else
+          id=0
+        fi
+
+        remaining=1
+        while [ -n "$remaining" ] && [ $remaining -gt 0 ]
+        do
+          # Get user
+          query="\
+            SELECT id, login, followers_url \
+            FROM users \
+            WHERE id > ${id} \
+            ORDER BY id \
+            LIMIT 1"
+          result=$(sqlite3 github-users.db "$query")
+
+          # id|login|followers_url
+          id=$(echo "$result" | cut -f 1 -d '|')
+          username=$(echo "$result" | cut -f 2 -d '|')
+          followers_url=$(echo "$result" | cut -f 3 -d '|')
+
+          # 0 rows
+          if [ -z "$followers_url" ]
+          then
+            exit
+          fi
+
+          # Get followers
+          if
+            getfollowers "$username"
+          then
+            # Get `page` parameter
+            page=$(
+              pcregrep -o1 'link: <.+>; rel="next", <.+&page=(\d+)>; rel="last"' \
+              < store.txt
+            )
+            if [ -z "$page" ]
+            then
+              page=1
+              count=0
+            else
+              count=$((100 * (page - 1)))
+            fi
+
+            # Get number of followers on the last page
+            getfollowers "$username" "$page"
+            followers=$(jq 'length' followers.json)
+            count=$((count + followers))
+            echo "$username has $count followers"
+
+            # Insert followers
+            echo "{\
+          \"id\": ${id},\
+          \"count\": ${count}\
+        }" | \
+            sqlite-utils insert github-users.db users_followers - --pk=id
+          else
+            # The time at which the current rate limit window resets in UTC epoch
+            # seconds.
+            reset=$(grep 'x-ratelimit-reset' store.txt)
+            echo "$reset"
+            reset=$(echo "$reset" | tr -cd '[:digit:]')
+
+            # `x-ratelimit-reset` - current time
+            remaining=$((reset - $(date +%s)))
+            if [ $remaining -gt 0 ]
+            then
+                echo "$remaining seconds until rate limit reset"
+            fi
+
+            # { "message": ".*" } -> message: .*
+            grep -Eo '("message":)\s*(".*")' followers.json | tr -d '"'
+            exit
+          fi
+
+          # The number of requests remaining in the current rate limit window.
+          remaining=$(grep 'x-ratelimit-remaining' store.txt)
+          echo "$remaining"
+          remaining=$(echo "$remaining" | tr -cd '[:digit:]')
+        done
+
+    - name: Compress database
+      run: |
+        rm github-users.tzst
+        /usr/bin/tar \
+          --use-compress-program zstd \
+          -cf github-users.tzst github-users.db
+
+    - name: Commit changes
+      run: |
+        git config --global user.email "$(id -un)@$(uname -n)"
+        git config --global user.name "$(id -un)"
+        git add github-users.tzst
+        if git commit -m 'Update github-users.tzst'
+        then
+          git push
+        fi
