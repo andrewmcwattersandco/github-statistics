@@ -14,9 +14,9 @@ from a repository without deleting and recreating the repository.
 * `github-users.db`  
 
 ### Tables
-* `users`
+* `users`  
   The first 1.5 million GitHub users as listed by `GET /users`
-* `users_followers`
+* `users_followers`  
   The first 22,500 GitHub users from `users` and their follower counts
 
 ## Decompress database
