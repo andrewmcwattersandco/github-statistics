@@ -20,6 +20,9 @@ jobs:
     - name: Set up sqlite-utils
       run: pip install sqlite-utils
 
+    - name: Set up pcregrep
+      run: apt-get -y install pcregrep
+
     - name: Decompress database
       run: /usr/bin/tar --use-compress-program zstd -xf github-users.tzst
 
