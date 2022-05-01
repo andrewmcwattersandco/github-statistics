@@ -3,9 +3,17 @@
 [GitHub Users API][1] on a regularly scheduled basis to generate distribution
 statistics based on a subset of GitHub early users.
 
+## Abstract
+As of 2021, GitHub has over 73 million registered users. The `github-users.db`
+SQLite database in this repository includes the first 1.5 million registered
+users. It reflects 15 CI runs, pulling 100,000 users per run, compressed with
+Zstandard, the same compression algorithm GitHub uses for `actions/cache@v3`.
+
 The planned studies to be produced by this repository will be bounded by GitHub
 repository limits in order to follow recommendations set out by the
-[Managing large files][2] article.
+[Managing large files][2] article. 1.5 million users is the maximum amount of
+users that can fit in a full series of 100,000 user inserts after compressed
+with Zstandard.
 
 **Note:** [Do not use Git LFS.][3] It is not possible to remove Git LFS objects
 from a repository without deleting and recreating the repository. 
