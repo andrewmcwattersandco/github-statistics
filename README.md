@@ -3,6 +3,9 @@
 [GitHub Users API][1] on a regularly scheduled basis to generate distribution
 statistics based on a subset of GitHub early users.
 
+## Google Sheets
+https://docs.google.com/spreadsheets/d/1HBSwxr0jkUoMulQxyVTC81YHN2mr2lUZbc8kkdmnQWY/edit?usp=sharing
+
 ## Abstract
 As of 2021, GitHub has over 73 million registered users. The `github-users.db`
 SQLite database in this repository includes the first 1.5 million registered
