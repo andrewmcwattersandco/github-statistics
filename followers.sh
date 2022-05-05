@@ -81,25 +81,34 @@ do
 }" | \
     sqlite-utils insert github-users.db users_followers - --pk=id
   else
-    # Status code
-    head -n 1 store.txt
-
-    # The time at which the current rate limit window resets in UTC epoch
-    # seconds.
-    reset=$(grep 'x-ratelimit-reset' store.txt)
-    echo "$reset"
-    reset=$(echo "$reset" | tr -cd '[:digit:]')
-
-    # `x-ratelimit-reset` - current time
-    remaining=$((reset - $(date +%s)))
-    if [ $remaining -gt 0 ]
+    # Status-code
+    status_code=$(head -n 1 store.txt | awk '{ print $2 }')
+    if [ "$status_code" = '401' ]
     then
-        echo "$remaining seconds until rate limit reset"
-    fi
+      # The time at which the current rate limit window resets in UTC epoch
+      # seconds.
+      reset=$(grep 'x-ratelimit-reset' store.txt)
+      echo "$reset"
+      reset=$(echo "$reset" | tr -cd '[:digit:]')
 
-    # { "message": ".*" } -> message: .*
-    grep -Eo '("message":)\s*(".*")' followers.json | tr -d '"'
-    exit
+      # `x-ratelimit-reset` - current time
+      remaining=$((reset - $(date +%s)))
+      if [ $remaining -gt 0 ]
+      then
+          echo "$remaining seconds until rate limit reset"
+      fi
+
+      # { "message": ".*" } -> message: .*
+      grep -Eo '("message":)\s*(".*")' followers.json | tr -d '"'
+      exit
+    elif [ "$status_code" = '404' ]
+    then
+      echo "$username not found"
+
+      # { "message": ".*" } -> message: .*
+      grep -Eo '("message":)\s*(".*")' followers.json | tr -d '"'
+      continue
+    fi
   fi
 
   # The number of requests remaining in the current rate limit window.
