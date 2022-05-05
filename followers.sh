@@ -81,6 +81,9 @@ do
 }" | \
     sqlite-utils insert github-users.db users_followers - --pk=id
   else
+    # Status code
+    head -n 1 store.txt
+
     # The time at which the current rate limit window resets in UTC epoch
     # seconds.
     reset=$(grep 'x-ratelimit-reset' store.txt)
