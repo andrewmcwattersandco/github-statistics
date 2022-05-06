@@ -28,7 +28,7 @@ from a repository without deleting and recreating the repository.
 * `users`  
   The first 1.5 million GitHub users as listed by `GET /users`
 * `users_followers`  
-  The first 22,500 GitHub users from `users` and their follower counts
+  The first 30,000 GitHub users from `users` and their follower counts
 
 ## Decompress database
 ### macOS
