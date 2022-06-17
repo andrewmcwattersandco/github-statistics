@@ -1,14 +1,14 @@
 name: Followers
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
   workflow_dispatch:
-  schedule:
-      - cron:  '30 * * * *'
+  # schedule:
+  #     - cron:  '30 * * * *'
 
 jobs:
   build:
