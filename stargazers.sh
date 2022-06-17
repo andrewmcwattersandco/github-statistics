@@ -41,7 +41,6 @@ do
   result=$(sqlite3 github-repositories.db "$query")
 
   # id|full_name|stargazers_url
-  echo $result
   id=$(echo "$result" | cut -f 1 -d '|')
   full_name=$(echo "$result" | cut -f 2 -d '|')
   stargazers_url=$(echo "$result" | cut -f 3 -d '|')
@@ -81,7 +80,8 @@ do
   \"count\": ${count},\
   \"created_at\": $(date -u "+%s"),\
   \"updated_at\": null\
-}"
+}" | \
+    sqlite-utils insert github-repositories.db repositories_stargazers - --pk=id
   else
     # Status-code
     status_code=$(head -n 1 store.txt | awk '{ print $2 }')
