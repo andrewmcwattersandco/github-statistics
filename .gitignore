@@ -4,3 +4,6 @@ store.txt
 users.json
 followers.json
 members.json
+github-repositories.db
+github-repositories.tar
+repositories.json
