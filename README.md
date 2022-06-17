@@ -31,6 +31,8 @@ from a repository without deleting and recreating the repository.
 ### Tables
 * `repositories` **NEW**  
   GitHub repositories as listed by `GET /repositories`
+* `repositories_stargazers` **NEW**  
+  GitHub repositories from `repositories` and their stargazer counts
 * `users`  
   GitHub users as listed by `GET /users`
 * `users_followers`  
