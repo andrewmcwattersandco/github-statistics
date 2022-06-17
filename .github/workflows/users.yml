@@ -49,7 +49,7 @@ jobs:
             echo "$reset"
             reset=$(echo "$reset" | tr -cd '[:digit:]')
 
-            remaining=$((reset - $(date +%s)))
+            remaining=$((reset - $(date -u "+%s")))
             if [ $remaining -gt 0 ]
             then
                 echo "$remaining seconds until rate limit reset"
