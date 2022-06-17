@@ -78,6 +78,8 @@ do
     echo "{\
   \"id\": ${id},\
   \"count\": ${count}\
+  \"created_at\": $(date -u "+%s")\
+  \"updated_at\": null\
 }" | \
     sqlite-utils insert github-users.db users_followers - --pk=id
   else
