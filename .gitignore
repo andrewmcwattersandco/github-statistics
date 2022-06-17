@@ -7,3 +7,4 @@ members.json
 github-repositories.db
 github-repositories.tar
 repositories.json
+stargazers.json
