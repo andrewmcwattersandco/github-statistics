@@ -84,7 +84,7 @@ jobs:
 
     - name: Compress database
       run: |
-        rm github-repositories.tzst
+        rm -f github-repositories.tzst
         /usr/bin/tar \
           --use-compress-program zstd \
           -cf github-repositories.tzst github-repositories.db
