@@ -21,7 +21,11 @@ jobs:
       run: pip install sqlite-utils
 
     - name: Decompress database
-      run: /usr/bin/tar --use-compress-program zstd -xf github-repositories.tzst
+      run: |
+        if [ -f github-repositories.tzst ]
+        then
+          /usr/bin/tar --use-compress-program zstd -xf github-repositories.tzst
+        fi
 
     - name: Run
       env:
