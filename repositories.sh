@@ -4,7 +4,12 @@ query='SELECT id FROM repositories ORDER BY id DESC LIMIT 1'
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   # Get last user
-  since=$(sqlite3 github-repositories.db "$query")
+  if [ -f github-repositories.db ]
+  then
+    since=$(sqlite3 github-repositories.db "$query")
+  else
+    since=0
+  fi
   if
     curl \
       -D store.txt \
