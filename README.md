@@ -19,7 +19,7 @@ repository limits in order to follow recommendations set out by the
 users that can fit in a full series of 100,000 user inserts after compressed
 with Zstandard.
 
-As of Jun 17, github-statistics adds repositories.
+As of Jun 17 2022, github-statistics adds repositories.
 
 **Note:** [Do not use Git LFS.][4] It is not possible to remove Git LFS objects
 from a repository without deleting and recreating the repository. 
