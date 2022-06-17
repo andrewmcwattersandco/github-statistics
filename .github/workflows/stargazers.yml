@@ -109,8 +109,8 @@ jobs:
             # Insert stargazers
             echo "{\
           \"id\": ${id},\
-          \"count\": ${count}\
-          \"created_at\": $(date -u "+%s")\
+          \"count\": ${count},\
+          \"created_at\": $(date -u "+%s"),\
           \"updated_at\": null\
         }" | \
             sqlite-utils insert github-repositories.db repositories_stargazers - --pk=id
