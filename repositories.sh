@@ -30,8 +30,10 @@ do
       ! sqlite-utils insert github-repositories.db repositories - --pk=id \
       < repositories.json
     then
-      cat repositories.json
+      # cat repositories.json
       per_page=$((per_page / 2))
+      printf "repositories: failed to insert repositories, retrying with \
+per_page=%s\n" $per_page
     else
       per_page=100
     fi
