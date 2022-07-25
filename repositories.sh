@@ -1,7 +1,6 @@
 #!/bin/sh
 remaining=1
 query='SELECT id FROM repositories ORDER BY id DESC LIMIT 1'
-per_page=100
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   # Get last user
@@ -12,31 +11,21 @@ do
     since=0
   fi
   if
+    # BUG: `/repositories` can return `null` in its response. Use `jq` to filter
+    # them out.
     curl \
       -D store.txt \
       -H "Accept: application/vnd.github.v3+json" \
       -H "Authorization: Bearer $GITHUB_TOKEN" \
       -S \
       -s \
-      "https://api.github.com/repositories?per_page=${per_page}&since=${since}" \
-      > repositories.json
+      "https://api.github.com/repositories?per_page=${per_page}&since=${since}" | \
+    jq '[.[] | select(. != null)]' > repositories.json
     grep -q 'HTTP/2 200' store.txt
   then
     # Insert repositories
-    if
-      # BUG: sqlite-utils can return "Error: Rows must all be dictionaries, got:
-      # None" on valid JSON. This if-clause prints the response from curl for
-      # debugging, then halves `per_page` and tries again.
-      ! sqlite-utils insert github-repositories.db repositories - --pk=id \
-      < repositories.json
-    then
-      # cat repositories.json
-      per_page=$((per_page / 2))
-      printf "repositories: failed to insert repositories, retrying with \
-per_page=%s\n" $per_page
-    else
-      per_page=100
-    fi
+    sqlite-utils insert github-repositories.db repositories - --pk=id \
+    < repositories.json
   else
     # The time at which the current rate limit window resets in UTC epoch
     # seconds.
