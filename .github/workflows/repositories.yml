@@ -52,8 +52,15 @@ jobs:
               -s \
               "https://api.github.com/repositories?per_page=100&since=${since}" \
               > repositories.json
+            test -s repositories.json
             grep -q 'HTTP/2 200' store.txt
           then
+            # if [ ! -s repositories.json ]
+            # then
+            #   printf "repositories: file '%s' is empty\n" 'repositories.json'
+            #   exit 1
+            # fi
+
             # Insert repositories
             sqlite-utils insert github-repositories.db repositories - --pk=id \
             < repositories.json
