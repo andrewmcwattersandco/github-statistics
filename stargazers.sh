@@ -29,6 +29,7 @@ else
 fi
 
 remaining=1
+status=1
 while [ -n "$remaining" ] && [ $remaining -gt 0 ]
 do
   # Get repository
@@ -82,6 +83,7 @@ do
   \"updated_at\": null\
 }" | \
     sqlite-utils insert github-repositories.db repositories_stargazers - --pk=id
+    success=0
   else
     # Status-code
     status_code=$(head -n 1 store.txt | awk '{ print $2 }')
@@ -118,3 +120,8 @@ do
   echo "$remaining"
   remaining=$(echo "$remaining" | tr -cd '[:digit:]')
 done
+
+if [ $status != 0 ]
+then
+  exit 1
+fi
