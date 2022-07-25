@@ -40,16 +40,17 @@ do
     LIMIT 1"
   result=$(sqlite3 github-repositories.db "$query")
 
+  # 0 rows
+  if [ -z "$result" ]
+  then
+    printf "stargazers: all repositories scraped\n"
+    exit 1
+  fi
+
   # id|full_name|stargazers_url
   id=$(echo "$result" | cut -f 1 -d '|')
   full_name=$(echo "$result" | cut -f 2 -d '|')
-  stargazers_url=$(echo "$result" | cut -f 3 -d '|')
-
-  # 0 rows
-  if [ -z "$stargazers_url" ]
-  then
-    continue
-  fi
+  # stargazers_url=$(echo "$result" | cut -f 3 -d '|')
 
   # Get stargazers
   if
