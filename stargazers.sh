@@ -49,7 +49,7 @@ do
   # 0 rows
   if [ -z "$stargazers_url" ]
   then
-    exit
+    continue
   fi
 
   # Get stargazers
